@@ -1,13 +1,32 @@
-<script>
-const type = new URLSearchParams(window.location.search).get("type");
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>二手書平台</title>
+</head>
+<body>
+  <h1>載入中...</h1>
 
-if (type === "buy") {
-  location.href = "buy.html";
-} 
-else if (type === "sell") {
-  location.href = "sell.html";
-} 
-else if (type === "manage") {
-  location.href = "manage.html";
-}
-</script>
+  <script>
+    const type = new URLSearchParams(window.location.search).get("type");
+
+    console.log("type =", type);
+
+    if (type === "buy") {
+      location.href = "buy.html";
+    } 
+    else if (type === "sell") {
+      location.href = "sell.html";
+    } 
+    else if (type === "manage") {
+      location.href = "manage.html";
+    } 
+    else {
+      document.body.innerHTML = `
+        <h1>二手書平台</h1>
+        <p>請從圖文選單進入</p>
+      `;
+    }
+  </script>
+</body>
+</html>

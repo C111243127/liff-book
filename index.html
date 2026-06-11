@@ -3,55 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <title>二手書平台</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
   <h1>載入中...</h1>
 
   <script>
-    const url = new URL(window.location.href);
+    async function main() {
+      await liff.init({ liffId: "2010373359-oAms7vpy" });
 
-    let type = null;
+      // 🔥 直接從 LIFF context 拿（最穩）
+      const context = liff.getContext();
 
-    // 1️⃣ 先抓正常 ?type=xxx
-    const params = url.searchParams;
-    type = params.get("type");
+      console.log("context:", context);
 
-    // 2️⃣ 如果沒有 → 嘗試解析 LINE LIFF 的 liff.state
-    if (!type) {
-      const state = params.get("liff.state");
+      let type = null;
 
-      if (state) {
-        try {
-          const decoded = decodeURIComponent(state); // "?type=buy"
-          const stateParams = new URLSearchParams(decoded);
-          type = stateParams.get("type");
-        } catch (e) {
-          console.log("decode error:", e);
-        }
+      if (context && context.queryString) {
+        const params = new URLSearchParams(context.queryString);
+        type = params.get("type");
+      }
+
+      console.log("type:", type);
+
+      if (type === "buy") {
+        location.replace("buy.html");
+      } else if (type === "sell") {
+        location.replace("sell.html");
+      } else if (type === "manage") {
+        location.replace("manage.html");
+      } else {
+        document.body.innerHTML = `
+          <h1>二手書平台</h1>
+          <p>沒有收到 type</p>
+          <p>context: ${JSON.stringify(context)}</p>
+        `;
       }
     }
 
-    console.log("final type =", type);
-    console.log("full url =", window.location.href);
-
-    // 3️⃣ 跳轉邏輯
-    if (type === "buy") {
-      location.replace("buy.html");
-    } 
-    else if (type === "sell") {
-      location.replace("sell.html");
-    } 
-    else if (type === "manage") {
-      location.replace("manage.html");
-    } 
-    else {
-      document.body.innerHTML = `
-        <h1>二手書平台</h1>
-        <p>⚠️ 沒有收到 type</p>
-        <p>請檢查 LINE 圖文選單連結</p>
-        <p style="word-break:break-all;">${window.location.href}</p>
-      `;
-    }
+    main();
   </script>
 </body>
 </html>

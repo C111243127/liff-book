@@ -1,15 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>二手書平台</title>
-</head>
-<body>
-  <h1>二手書平台</h1>
+<script>
+const type = new URLSearchParams(window.location.search).get("type");
 
-  <a href="buy.html">買書</a><br>
-  <a href="sell.html">賣書</a><br>
-  <a href="manage.html">管理書籍</a><br>
-
-</body>
-</html>
+if (type === "buy") {
+  location.href = "buy.html";
+} 
+else if (type === "sell") {
+  location.href = "sell.html";
+} 
+else if (type === "manage") {
+  location.href = "manage.html";
+}
+</script>

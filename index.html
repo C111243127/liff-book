@@ -1,36 +1,57 @@
-<script>
-let type = null;
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>二手書平台</title>
+</head>
+<body>
+  <h1>載入中...</h1>
 
-// 1️⃣ 先正常抓 ?type=xxx
-const params = new URLSearchParams(window.location.search);
-type = params.get("type");
+  <script>
+    const url = new URL(window.location.href);
 
-// 2️⃣ 如果抓不到 → 去解析 liff.state
-if (!type) {
-  const state = params.get("liff.state");
-  if (state) {
-    const decoded = decodeURIComponent(state); // 變成 ?type=buy
-    const stateParams = new URLSearchParams(decoded);
-    type = stateParams.get("type");
-  }
-}
+    let type = null;
 
-console.log("type =", type);
+    // 1️⃣ 先抓正常 ?type=xxx
+    const params = url.searchParams;
+    type = params.get("type");
 
-if (type === "buy") {
-  location.href = "buy.html";
-} 
-else if (type === "sell") {
-  location.href = "sell.html";
-} 
-else if (type === "manage") {
-  location.href = "manage.html";
-} 
-else {
-  document.body.innerHTML = `
-    <h1>二手書平台</h1>
-    <p>type 沒有讀到</p>
-    <p>${window.location.href}</p>
-  `;
-}
-</script>
+    // 2️⃣ 如果沒有 → 嘗試解析 LINE LIFF 的 liff.state
+    if (!type) {
+      const state = params.get("liff.state");
+
+      if (state) {
+        try {
+          const decoded = decodeURIComponent(state); // "?type=buy"
+          const stateParams = new URLSearchParams(decoded);
+          type = stateParams.get("type");
+        } catch (e) {
+          console.log("decode error:", e);
+        }
+      }
+    }
+
+    console.log("final type =", type);
+    console.log("full url =", window.location.href);
+
+    // 3️⃣ 跳轉邏輯
+    if (type === "buy") {
+      location.replace("buy.html");
+    } 
+    else if (type === "sell") {
+      location.replace("sell.html");
+    } 
+    else if (type === "manage") {
+      location.replace("manage.html");
+    } 
+    else {
+      document.body.innerHTML = `
+        <h1>二手書平台</h1>
+        <p>⚠️ 沒有收到 type</p>
+        <p>請檢查 LINE 圖文選單連結</p>
+        <p style="word-break:break-all;">${window.location.href}</p>
+      `;
+    }
+  </script>
+</body>
+</html>

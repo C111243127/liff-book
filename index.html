@@ -1,47 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
   <title>二手書平台</title>
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial;
+      background: #f5f5f5;
+    }
+    h1 {
+      margin-top: 50px;
+    }
+    .btn {
+      display: block;
+      width: 200px;
+      margin: 20px auto;
+      padding: 15px;
+      background: #06c755;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 18px;
+    }
+  </style>
 </head>
 <body>
-  <h1>載入中...</h1>
 
-  <script>
-    async function main() {
-      await liff.init({ liffId: "2010373359-oAms7vpy" });
+<h1>📚 二手書平台</h1>
 
-      // 🔥 直接從 LIFF context 拿（最穩）
-      const context = liff.getContext();
+<a class="btn" href="/buy.html">我要買書</a>
+<a class="btn" href="/sell.html">我要賣書</a>
+<a class="btn" href="/manage.html">管理書籍</a>
 
-      console.log("context:", context);
-
-      let type = null;
-
-      if (context && context.queryString) {
-        const params = new URLSearchParams(context.queryString);
-        type = params.get("type");
-      }
-
-      console.log("type:", type);
-
-      if (type === "buy") {
-        location.replace("buy.html");
-      } else if (type === "sell") {
-        location.replace("sell.html");
-      } else if (type === "manage") {
-        location.replace("manage.html");
-      } else {
-        document.body.innerHTML = `
-          <h1>二手書平台</h1>
-          <p>沒有收到 type</p>
-          <p>context: ${JSON.stringify(context)}</p>
-        `;
-      }
-    }
-
-    main();
-  </script>
 </body>
 </html>

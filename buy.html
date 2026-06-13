@@ -1,10 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
   <title>買書</title>
 </head>
 <body>
-  <h1>買書頁面</h1>
+
+<h2>書籍列表</h2>
+
+<div id="list"></div>
+
+<script>
+let books = JSON.parse(localStorage.getItem("books")) || [];
+
+let html = "";
+books.forEach((b)=>{
+  html += `<p>${b.title} - $${b.price}</p>`;
+});
+
+document.getElementById("list").innerHTML = html;
+</script>
+
 </body>
 </html>

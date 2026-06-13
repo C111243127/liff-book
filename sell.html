@@ -1,1 +1,31 @@
-<h1>賣書頁面</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>賣書</title>
+</head>
+<body>
+
+<h2>我要賣書</h2>
+
+書名：<input id="title"><br><br>
+價格：<input id="price"><br><br>
+
+<button onclick="addBook()">送出</button>
+
+<script>
+function addBook(){
+  let books = JSON.parse(localStorage.getItem("books")) || [];
+
+  books.push({
+    title: document.getElementById("title").value,
+    price: document.getElementById("price").value
+  });
+
+  localStorage.setItem("books", JSON.stringify(books));
+
+  alert("新增成功！");
+}
+</script>
+
+</body>
+</html>

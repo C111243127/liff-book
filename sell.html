@@ -1,30 +1,77 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>賣書</title>
 </head>
+
 <body>
 
-<h2>我要賣書</h2>
+<h2>📘 賣書上架</h2>
 
-書名：<input id="title"><br><br>
-價格：<input id="price"><br><br>
+<input id="title" placeholder="書名"><br><br>
+<input id="price" placeholder="價格"><br><br>
 
-<button onclick="addBook()">送出</button>
+<button onclick="sellBook()">上架</button>
 
-<script>
-function addBook(){
-  let books = JSON.parse(localStorage.getItem("books")) || [];
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
-  books.push({
-    title: document.getElementById("title").value,
-    price: document.getElementById("price").value
+<script type="module">
+
+// 🔥 Firebase（你要改這裡）
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+
+const firebaseConfig = {
+  apiKey: "你的API_KEY",
+  authDomain: "你的AUTH_DOMAIN",
+  projectId: "你的PROJECT_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 🔥 LINE LIFF（你要改這裡）
+let userProfile = null;
+
+async function initLIFF() {
+  await liff.init({ liffId: "你的SELL LIFF ID" });
+
+  if (!liff.isLoggedIn()) {
+    liff.login();
+    return;
+  }
+
+  userProfile = await liff.getProfile();
+}
+
+initLIFF();
+
+// 🔥 上架功能（已幫你寫好）
+async function sellBook() {
+  const title = document.getElementById("title").value;
+  const price = document.getElementById("price").value;
+
+  if (!title || !price) {
+    alert("請填完整資料");
+    return;
+  }
+
+  await addDoc(collection(db, "books"), {
+    title: title,
+    price: Number(price),
+    sellerId: userProfile.userId,
+    sellerName: userProfile.displayName
   });
 
-  localStorage.setItem("books", JSON.stringify(books));
+  alert("✅ 上架成功！");
 
-  alert("新增成功！");
+  document.getElementById("title").value = "";
+  document.getElementById("price").value = "";
 }
+
+window.sellBook = sellBook;
+
 </script>
 
 </body>

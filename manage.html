@@ -1,35 +1,91 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>管理書籍</title>
 </head>
+
 <body>
 
-<h2>管理書籍</h2>
+<h2>📚 管理書籍</h2>
 
-<div id="list"></div>
+<div id="list">載入中...</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 <script>
-let books = JSON.parse(localStorage.getItem("books")) || [];
+// 🔥 Firebase 設定（跟你 SELL 一樣）
+const firebaseConfig = {
+  apiKey: "AIzaSyAGFGtA8VWFJA5wrB8e--f54Tk7VJRx9JU",
+  authDomain: "liff-book-fe31f.firebaseapp.com",
+  projectId: "liff-book-fe31f",
+  storageBucket: "liff-book-fe31f.firebasestorage.app",
+  messagingSenderId: "1067462386207",
+  appId: "1:1067462386207:web:befefae622c22a95a0eb2a"
+};
 
-function render(){
-  let html = "";
-  books.forEach((b, i)=>{
-    html += `
-      <p>${b.title} - $${b.price}
-      <button onclick="del(${i})">刪除</button></p>
-    `;
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+let books = [];
+
+// 🔥 讀取資料
+async function loadBooks() {
+  const snapshot = await db.collection("books").get();
+
+  books = [];
+  snapshot.forEach(doc => {
+    books.push({ id: doc.id, ...doc.data() });
   });
-  document.getElementById("list").innerHTML = html;
-}
 
-function del(i){
-  books.splice(i,1);
-  localStorage.setItem("books", JSON.stringify(books));
   render();
 }
 
-render();
+// 🔥 顯示畫面
+function render() {
+  let html = "";
+
+  books.forEach(b => {
+    html += `
+      <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+        📘 <b>${b.title}</b><br>
+        💰 價格：<input id="price-${b.id}" value="${b.price}"><br><br>
+
+        <button onclick="updatePrice('${b.id}')">修改價格</button>
+        <button onclick="deleteBook('${b.id}')">刪除</button>
+      </div>
+    `;
+  });
+
+  document.getElementById("list").innerHTML = html;
+}
+
+// 🔥 修改價格
+async function updatePrice(id) {
+  const newPrice = document.getElementById("price-" + id).value;
+
+  await db.collection("books").doc(id).update({
+    price: Number(newPrice)
+  });
+
+  alert("✅ 價格已更新");
+  loadBooks();
+}
+
+// 🔥 刪除書
+async function deleteBook(id) {
+  await db.collection("books").doc(id).delete();
+
+  alert("🗑 已刪除");
+  loadBooks();
+}
+
+window.updatePrice = updatePrice;
+window.deleteBook = deleteBook;
+
+loadBooks();
 </script>
 
 </body>

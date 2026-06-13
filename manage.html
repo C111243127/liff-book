@@ -1,1 +1,36 @@
-<h1>管理書籍頁面</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>管理書籍</title>
+</head>
+<body>
+
+<h2>管理書籍</h2>
+
+<div id="list"></div>
+
+<script>
+let books = JSON.parse(localStorage.getItem("books")) || [];
+
+function render(){
+  let html = "";
+  books.forEach((b, i)=>{
+    html += `
+      <p>${b.title} - $${b.price}
+      <button onclick="del(${i})">刪除</button></p>
+    `;
+  });
+  document.getElementById("list").innerHTML = html;
+}
+
+function del(i){
+  books.splice(i,1);
+  localStorage.setItem("books", JSON.stringify(books));
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>

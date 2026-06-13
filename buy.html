@@ -7,17 +7,28 @@
 
 <h2>書籍列表</h2>
 
+🔍 搜尋：<input id="search" onkeyup="render()"><br><br>
+
 <div id="list"></div>
 
 <script>
 let books = JSON.parse(localStorage.getItem("books")) || [];
 
-let html = "";
-books.forEach((b)=>{
-  html += `<p>${b.title} - $${b.price}</p>`;
-});
+function render(){
+  let keyword = document.getElementById("search").value.toLowerCase();
+  let html = "";
 
-document.getElementById("list").innerHTML = html;
+  books.forEach((b)=>{
+    if(b.title.toLowerCase().includes(keyword)){
+      html += `<p>${b.title} - $${b.price}</p>`;
+    }
+  });
+
+  document.getElementById("list").innerHTML = html;
+}
+
+// 一開始先顯示全部
+render();
 </script>
 
 </body>

@@ -1,34 +1,78 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>買書</title>
 </head>
+
 <body>
 
-<h2>書籍列表</h2>
+<h2>📚 買書搜尋</h2>
 
-🔍 搜尋：<input id="search" onkeyup="render()"><br><br>
-
+<input id="search" placeholder="搜尋書名" oninput="searchBooks()">
 <div id="list"></div>
 
-<script>
-let books = JSON.parse(localStorage.getItem("books")) || [];
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-function render(){
-  let keyword = document.getElementById("search").value.toLowerCase();
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAGFGtA8VWFJA5wrB8e--f54Tk7VJRx9JU",
+  authDomain: "liff-book-fe31f.firebaseapp.com",
+  projectId: "liff-book-fe31f",
+  storageBucket: "liff-book-fe31f.firebasestorage.app",
+  messagingSenderId: "1067462386207",
+  appId: "1:1067462386207:web:befefae622c22a95a0eb2a"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+let books = [];
+
+// 讀取全部書
+async function loadBooks() {
+  const snapshot = await db.collection("books").get();
+
+  books = [];
+  snapshot.forEach(doc => {
+    books.push(doc.data());
+  });
+
+  render(books);
+}
+
+// 搜尋
+function searchBooks() {
+  const keyword = document.getElementById("search").value.toLowerCase();
+
+  const result = books.filter(b =>
+    b.title.toLowerCase().includes(keyword)
+  );
+
+  render(result);
+}
+
+// 顯示
+function render(list) {
   let html = "";
 
-  books.forEach((b)=>{
-    if(b.title.toLowerCase().includes(keyword)){
-      html += `<p>${b.title} - $${b.price}</p>`;
-    }
+  list.forEach(b => {
+    html += `
+      <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+        📘 ${b.title}<br>
+        💰 價格：${b.price}<br>
+        👤 賣家：${b.sellerName || "未知"}
+      </div>
+    `;
   });
 
   document.getElementById("list").innerHTML = html;
 }
 
-// 一開始先顯示全部
-render();
+loadBooks();
+
 </script>
 
 </body>

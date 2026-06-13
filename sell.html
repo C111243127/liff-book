@@ -18,14 +18,17 @@
 
 <script type="module">
 
-// 🔥 Firebase（你要改這裡）
+// 🔥 Firebase（已幫你填好）
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "你的API_KEY",
-  authDomain: "你的AUTH_DOMAIN",
-  projectId: "你的PROJECT_ID"
+  apiKey: "AIzaSyAGFGtA8VWFJA5wrB8e--f54Tk7VJRx9JU",
+  authDomain: "liff-book-fe31f.firebaseapp.com",
+  projectId: "liff-book-fe31f",
+  storageBucket: "liff-book-fe31f.firebasestorage.app",
+  messagingSenderId: "1067462386207",
+  appId: "1:1067462386207:web:befefae622c22a95a0eb2a"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -35,7 +38,7 @@ const db = getFirestore(app);
 let userProfile = null;
 
 async function initLIFF() {
-  await liff.init({ liffId: "你的SELL LIFF ID" });
+  await liff.init({ liffId: "你的SELL LIFF ID" }); // ← 只改這裡！
 
   if (!liff.isLoggedIn()) {
     liff.login();
@@ -47,7 +50,7 @@ async function initLIFF() {
 
 initLIFF();
 
-// 🔥 上架功能（已幫你寫好）
+// 🔥 上架功能
 async function sellBook() {
   const title = document.getElementById("title").value;
   const price = document.getElementById("price").value;
